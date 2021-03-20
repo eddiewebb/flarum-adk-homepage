@@ -18,6 +18,7 @@ export default class AdkHomepage extends Page {
     this.isLoading = true;
     this.featuredPosts = [];
     this.posts = [];
+    this.discussions = [];
     this.hasMore = null;
     this.isLoadingMore = false;
 
@@ -65,6 +66,19 @@ export default class AdkHomepage extends Page {
           q,
         },
         sort: "-createdAt",
+        limit: 3
+      })
+      .then(this.augmentWithDiscussions.bind(this))
+      .catch(() => {
+        m.redraw();
+      });
+  }
+
+  augmentWithDiscussions(blogArticles){
+    this.featuredPosts = blogArticles.slice(0, 3);
+    app.store
+      .find("discussions", {
+        sort: "-createdAt"
       })
       .then(this.show.bind(this))
       .catch(() => {
@@ -87,8 +101,7 @@ export default class AdkHomepage extends Page {
         ? articles.payload.links.next
         : null;
 
-    this.featuredPosts = articles.slice(0, 3);
-    this.posts = articles.length >= 4 ? articles.slice(3, articles.length) : [];
+    this.posts = articles;
 
     this.isLoading = false;
 
@@ -436,45 +449,6 @@ export default class AdkHomepage extends Page {
           </div>
         </div>
       </div>
-    );
-  }
-
-  newArticle() {
-    let foundMainTag = false;
-    let tags = [];
-
-    const blogTags = app.forum.attribute("blogTags");
-
-    // Pre-select selected tags
-    app.store.all("tags").forEach((_tag) => {
-      // Find main blog tag
-      if (
-        !foundMainTag &&
-        !_tag.isChild() &&
-        blogTags.indexOf(_tag.id()) >= 0
-      ) {
-        tags.push(_tag);
-      }
-    });
-
-    // Get current category
-    const currentCategory = app.store.getBy(
-      "tags",
-      "slug",
-      m.route.param("slug")
-    );
-
-    if (currentCategory) {
-      tags.push(currentCategory);
-    }
-
-    // Redirect to the composer
-    m.route.set(
-      app.route("blogComposer", {
-        tags: tags.map((tag) => tag.id()).join(),
-        lang:
-          this.languages.length > 0 ? this.currentSelectedLanguage : undefined,
-      })
     );
   }
 }

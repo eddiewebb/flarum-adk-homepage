@@ -479,6 +479,7 @@ var AdkHomepage = /*#__PURE__*/function (_Page) {
     this.isLoading = true;
     this.featuredPosts = [];
     this.posts = [];
+    this.discussions = [];
     this.hasMore = null;
     this.isLoadingMore = false;
     this.languages = app.store.all("discussion-languages");
@@ -516,6 +517,16 @@ var AdkHomepage = /*#__PURE__*/function (_Page) {
       filter: {
         q: q
       },
+      sort: "-createdAt",
+      limit: 3
+    }).then(this.augmentWithDiscussions.bind(this))["catch"](function () {
+      m.redraw();
+    });
+  };
+
+  _proto.augmentWithDiscussions = function augmentWithDiscussions(blogArticles) {
+    this.featuredPosts = blogArticles.slice(0, 3);
+    app.store.find("discussions", {
       sort: "-createdAt"
     }).then(this.show.bind(this))["catch"](function () {
       m.redraw();
@@ -532,8 +543,7 @@ var AdkHomepage = /*#__PURE__*/function (_Page) {
 
 
     this.hasMore = articles.payload.links && articles.payload.links.next ? articles.payload.links.next : null;
-    this.featuredPosts = articles.slice(0, 3);
-    this.posts = articles.length >= 4 ? articles.slice(3, articles.length) : [];
+    this.posts = articles;
     this.isLoading = false;
     m.redraw();
   } // Load more blog posts
@@ -711,33 +721,6 @@ var AdkHomepage = /*#__PURE__*/function (_Page) {
     }, app.translator.trans("core.forum.discussion_list.load_more_button")))), m("div", {
       className: "Sidebar"
     }, m(_components_BlogCategories__WEBPACK_IMPORTED_MODULE_4__["default"], null), m(_components_ForumNav__WEBPACK_IMPORTED_MODULE_8__["default"], null)))));
-  };
-
-  _proto.newArticle = function newArticle() {
-    var foundMainTag = false;
-    var tags = [];
-    var blogTags = app.forum.attribute("blogTags"); // Pre-select selected tags
-
-    app.store.all("tags").forEach(function (_tag) {
-      // Find main blog tag
-      if (!foundMainTag && !_tag.isChild() && blogTags.indexOf(_tag.id()) >= 0) {
-        tags.push(_tag);
-      }
-    }); // Get current category
-
-    var currentCategory = app.store.getBy("tags", "slug", m.route.param("slug"));
-
-    if (currentCategory) {
-      tags.push(currentCategory);
-    } // Redirect to the composer
-
-
-    m.route.set(app.route("blogComposer", {
-      tags: tags.map(function (tag) {
-        return tag.id();
-      }).join(),
-      lang: this.languages.length > 0 ? this.currentSelectedLanguage : undefined
-    }));
   };
 
   return AdkHomepage;
