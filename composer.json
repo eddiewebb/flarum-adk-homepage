@@ -1,5 +1,5 @@
 {
-    "name": "webbinaro/adkhomepage",
+    "name": "webbinaro/flarum-adkhomepage",
     "description": "Custom homepage for adkadv.com",
     "type": "flarum-extension",
     "license": "MIT",
