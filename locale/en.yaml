@@ -1,1 +1,6 @@
-adkhomepage: ADK Homepage
+adkhomepage: 
+  name: ADK Homepage
+  admin.homepage: ADK Homepage
+  forum:
+    recent_discussions: Recent Discussions
+    no_more_discussions: No more recent Discussions

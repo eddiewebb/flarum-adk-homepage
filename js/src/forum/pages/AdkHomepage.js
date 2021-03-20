@@ -175,17 +175,6 @@ export default class AdkHomepage extends Page {
         <div className={"container"}>
           <div className={"BlogFeatured"}>
             <div className={"BlogOverviewButtons"}>
-              {app.forum.attribute("canWriteBlogPosts") && (
-                <Button
-                  className={"Button"}
-                  onclick={() => this.newArticle()}
-                  icon={"fas fa-pencil-alt"}
-                >
-                  {app.translator.trans(
-                    "v17development-flarum-blog.forum.compose.write_article"
-                  )}
-                </Button>
-              )}
 
               {this.languages !== null && this.languages.length >= 1 && (
                 <LanguageDropdown
@@ -308,6 +297,12 @@ export default class AdkHomepage extends Page {
 
           <div className={"BlogScrubber"}>
             <div className={"BlogList"}>
+
+          <h2>
+            {app.translator.trans(
+              "adkhomepage.forum.recent_discussions"
+            )}
+          </h2>
               {this.isLoading &&
                 [false, false, true, false].map((state) => {
                   return (
@@ -351,9 +346,7 @@ export default class AdkHomepage extends Page {
 
                   return (
                     <Link
-                      href={app.route("blogArticle", {
-                        id: `${article.slug()}`,
-                      })}
+                      href={`/d/${article.slug()}`}
                       className={`BlogList-item BlogList-item-${
                         isSized ? "sized" : "default"
                       }`}
@@ -411,7 +404,7 @@ export default class AdkHomepage extends Page {
                 this.hasMore === null && (
                   <p className={"FlarumBlog-reached-end"}>
                     {app.translator.trans(
-                      "v17development-flarum-blog.forum.no_more_posts"
+                      "adkhomepage.forum.no_more_discussions"
                     )}
                   </p>
                 )}

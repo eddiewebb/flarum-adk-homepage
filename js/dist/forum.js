@@ -590,13 +590,7 @@ var AdkHomepage = /*#__PURE__*/function (_Page) {
       className: "BlogFeatured"
     }, m("div", {
       className: "BlogOverviewButtons"
-    }, app.forum.attribute("canWriteBlogPosts") && m(flarum_components_Button__WEBPACK_IMPORTED_MODULE_2___default.a, {
-      className: "Button",
-      onclick: function onclick() {
-        return _this2.newArticle();
-      },
-      icon: "fas fa-pencil-alt"
-    }, app.translator.trans("v17development-flarum-blog.forum.compose.write_article")), this.languages !== null && this.languages.length >= 1 && m(_components_LanguageDropdown_LanguageDropdown__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    }, this.languages !== null && this.languages.length >= 1 && m(_components_LanguageDropdown_LanguageDropdown__WEBPACK_IMPORTED_MODULE_7__["default"], {
       selected: this.currentSelectedLanguage,
       onclick: function onclick(language) {
         _this2.currentSelectedLanguage = language;
@@ -662,7 +656,7 @@ var AdkHomepage = /*#__PURE__*/function (_Page) {
       className: "BlogScrubber"
     }, m("div", {
       className: "BlogList"
-    }, this.isLoading && [false, false, true, false].map(function (state) {
+    }, m("h2", null, app.translator.trans("adkhomepage.forum.recent_discussions")), this.isLoading && [false, false, true, false].map(function (state) {
       return m("div", {
         className: "BlogList-item BlogList-item-" + (state === true ? "sized" : "default") + " BlogList-item-ghost"
       }, m("div", {
@@ -679,9 +673,7 @@ var AdkHomepage = /*#__PURE__*/function (_Page) {
       var isSized = article.blogMeta() && article.blogMeta().isSized();
       var summary = article.blogMeta() && article.blogMeta().summary() ? article.blogMeta().summary() : "";
       return m(flarum_components_Link__WEBPACK_IMPORTED_MODULE_5___default.a, {
-        href: app.route("blogArticle", {
-          id: "" + article.slug()
-        }),
+        href: "/d/" + article.slug(),
         className: "BlogList-item BlogList-item-" + (isSized ? "sized" : "default")
       }, m("div", {
         className: "BlogList-item-photo FlarumBlog-default-image",
@@ -707,7 +699,7 @@ var AdkHomepage = /*#__PURE__*/function (_Page) {
       }), " ", article.commentCount() - 1))));
     }), !this.isLoading && this.featuredPosts.length > 0 && this.hasMore === null && m("p", {
       className: "FlarumBlog-reached-end"
-    }, app.translator.trans("v17development-flarum-blog.forum.no_more_posts")), !this.isLoading && this.featuredPosts.length === 0 && this.posts.length === 0 && m("p", {
+    }, app.translator.trans("adkhomepage.forum.no_more_discussions")), !this.isLoading && this.featuredPosts.length === 0 && this.posts.length === 0 && m("p", {
       className: "FlarumBlog-reached-end"
     }, app.translator.trans("v17development-flarum-blog.forum.category_empty")), !this.isLoading && this.hasMore !== null && m("div", {
       className: "FlarumBlog-reached-load-more"
