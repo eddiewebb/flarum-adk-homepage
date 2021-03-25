@@ -66,7 +66,7 @@ export default class AdkHomepage extends Page {
           q,
         },
         sort: "-createdAt",
-        limit: 3
+        limit: 3,
       })
       .then(this.augmentWithDiscussions.bind(this))
       .catch(() => {
@@ -74,11 +74,11 @@ export default class AdkHomepage extends Page {
       });
   }
 
-  augmentWithDiscussions(blogArticles){
+  augmentWithDiscussions(blogArticles) {
     this.featuredPosts = blogArticles.slice(0, 3);
     app.store
       .find("discussions", {
-        sort: "-createdAt"
+        sort: "-createdAt",
       })
       .then(this.show.bind(this))
       .catch(() => {
@@ -175,7 +175,6 @@ export default class AdkHomepage extends Page {
         <div className={"container"}>
           <div className={"BlogFeatured"}>
             <div className={"BlogOverviewButtons"}>
-
               {this.languages !== null && this.languages.length >= 1 && (
                 <LanguageDropdown
                   selected={this.currentSelectedLanguage}
@@ -297,12 +296,9 @@ export default class AdkHomepage extends Page {
 
           <div className={"BlogScrubber"}>
             <div className={"BlogList"}>
-
-          <h2>
-            {app.translator.trans(
-              "adkhomepage.forum.recent_discussions"
-            )}
-          </h2>
+              <h2>
+                {app.translator.trans("adkhomepage.forum.recent_discussions")}
+              </h2>
               {this.isLoading &&
                 [false, false, true, false].map((state) => {
                   return (
@@ -333,9 +329,9 @@ export default class AdkHomepage extends Page {
               {!this.isLoading &&
                 this.posts.length >= 1 &&
                 this.posts.map((article) => {
-                  const blogImage =
-                    article.blogMeta() && article.blogMeta().featuredImage()
-                      ? `url(${article.blogMeta().featuredImage()})`
+                  const blogImage = 
+                    article.user().avatarUrl() 
+                      ? `url(${article.user().avatarUrl()})`
                       : defaultImage;
                   const isSized =
                     article.blogMeta() && article.blogMeta().isSized();
@@ -343,7 +339,7 @@ export default class AdkHomepage extends Page {
                     article.blogMeta() && article.blogMeta().summary()
                       ? article.blogMeta().summary()
                       : "";
-
+                  console.log(blogImage);
                   return (
                     <Link
                       href={`/d/${article.slug()}`}
