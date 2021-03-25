@@ -351,7 +351,12 @@ export default class AdkHomepage extends Page {
                         className={
                           "BlogList-item-photo-user FlarumBlog-default-image"
                         }
-                        style={{ backgroundImage: blogImage }}
+                        style={{ 
+                                 backgroundImage: blogImage, 
+                                backgroundRepeat: 'no-repeat',
+                              backgroundPosition: 'center',
+                                  backgroundSize: 'cover' 
+                              }}
                       ></div>
                       <div className={"BlogList-item-content"}>
                         <h4>
