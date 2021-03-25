@@ -349,7 +349,7 @@ export default class AdkHomepage extends Page {
                     >
                       <div
                         className={
-                          "BlogList-item-photo FlarumBlog-default-image"
+                          "BlogList-item-photo-user FlarumBlog-default-image"
                         }
                         style={{ backgroundImage: blogImage }}
                       ></div>
