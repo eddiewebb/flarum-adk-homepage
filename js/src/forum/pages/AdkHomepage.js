@@ -6,6 +6,8 @@ import Link from "flarum/components/Link";
 import tooltip from "../utils/tooltip";
 import LanguageDropdown from "../components/LanguageDropdown/LanguageDropdown";
 import ForumNav from "../components/ForumNav";
+import { truncate } from 'flarum/utils/string';
+
 
 export default class AdkHomepage extends Page {
   oninit(vnode) {
@@ -296,7 +298,7 @@ export default class AdkHomepage extends Page {
           <div className={"BlogScrubber"}>
             <div className={"BlogList"}>
               <h2>
-                {app.translator.trans("adkhomepage.forum.recent_discussions")}
+                {app.translator.trans("adkhomepage.forum.recent_posts")}
               </h2>
               {this.isLoading &&
                 [false, false, true, false].map((state) => {
@@ -329,18 +331,19 @@ export default class AdkHomepage extends Page {
                 this.posts.length >= 1 &&
                 this.posts.map((article) => {
                   const blogImage = 
-                    article.user().avatarUrl() 
-                      ? `url(${article.user().avatarUrl()})`
+                    article.lastPostedUser().avatarUrl() 
+                      ? `url(${article.lastPostedUser().avatarUrl()})`
                       : defaultImage;
                   const isSized =
                     article.blogMeta() && article.blogMeta().isSized();
                   const summary =
                     article.blogMeta() && article.blogMeta().summary()
                       ? article.blogMeta().summary()
-                      : "";
+                      : truncate(article.lastPost().contentPlain(),140);
+                    
                   return (
                     <Link
-                      href={`/d/${article.slug()}`}
+                      href={`/d/${article.slug()}/${article.lastPostNumber()}`}
                       className={`BlogList-item BlogList-item-${
                         isSized ? "sized" : "default"
                       }`}
@@ -380,12 +383,12 @@ export default class AdkHomepage extends Page {
                         <div className={"data"}>
                           <span>
                             <i className={"far fa-clock"} />{" "}
-                            {humanTime(article.createdAt())}
+                            {humanTime(article.lastPostedAt())}
                           </span>
                           <span>
                             <i className={"far fa-user"} />{" "}
-                            {article.user()
-                              ? article.user().displayName()
+                            {article.lastPostedUser()
+                              ? article.lastPostedUser().displayName()
                               : "[Deleted]"}
                           </span>
                           <span>

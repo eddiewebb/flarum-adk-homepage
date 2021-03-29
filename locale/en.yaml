@@ -3,4 +3,5 @@ adkhomepage:
   admin.homepage: ADK Homepage
   forum:
     recent_discussions: Recent Discussions
+    recent_posts: Discussions with recent activity
     no_more_discussions: No more recent Discussions

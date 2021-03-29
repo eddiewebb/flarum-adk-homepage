@@ -51,8 +51,9 @@ class AdkHomepageController
         $recentDiscussions = $this->getApiDocument($request->getAttribute('actor'), [
             "sort" => "-lastPostedAt",
             "limit" => "50",
+            "include" => "lastPost"
         ]);
-
+        //var_dump($recentDiscussions);
         // Set payload
         $bothDatas = array_replace_recursive($blogDiscussions->data,$recentDiscussions->data);
         $bothIncluded = array_replace_recursive($blogDiscussions->included,$recentDiscussions->included);
