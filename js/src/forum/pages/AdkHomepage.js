@@ -29,7 +29,7 @@ export default class AdkHomepage extends Page {
       : app.translator.locale;
 
     // Send history push
-    app.history.push("blog");
+    app.history.push("adkhome");
 
     this.loadBlogOverview();
   }
@@ -43,7 +43,7 @@ export default class AdkHomepage extends Page {
       // component for the first time on page load, then any calls to m.redraw
       // will be ineffective and thus any configs (scroll code) will be run
       // before stuff is drawn to the page.
-      setTimeout(this.show.bind(this, preloadBlogOverview), 0);
+      setTimeout(this.reloadData.bind(this, preloadBlogOverview), 0);
     } else {
       this.reloadData();
     }
@@ -68,30 +68,29 @@ export default class AdkHomepage extends Page {
         sort: "-createdAt",
         limit: 3,
       })
-      .then(this.augmentWithDiscussions.bind(this))
+      .then((blogs) => {
+        //save the blogs off, then grab discussions
+        this.featuredPosts = blogs.slice(0, 3);
+        app.store
+          .find("discussions", {
+            sort: "-lastPostedAt",
+          })
+          .then(this.show.bind(this))
+          .catch(() => {
+            m.redraw();
+          });
+      })
       .catch(() => {
         m.redraw();
       });
   }
 
-  augmentWithDiscussions(blogArticles) {
-    this.featuredPosts = blogArticles.slice(0, 3);
-    app.store
-      .find("discussions", {
-        sort: "-createdAt",
-      })
-      .then(this.show.bind(this))
-      .catch(() => {
-        m.redraw();
-      });
-  }
 
   // Show blog posts
   show(articles) {
     if (articles.length === 0) {
       this.isLoading = false;
       m.redraw();
-
       return;
     }
 
@@ -339,7 +338,6 @@ export default class AdkHomepage extends Page {
                     article.blogMeta() && article.blogMeta().summary()
                       ? article.blogMeta().summary()
                       : "";
-                  console.log(blogImage);
                   return (
                     <Link
                       href={`/d/${article.slug()}`}

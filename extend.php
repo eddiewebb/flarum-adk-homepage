@@ -13,13 +13,14 @@ use Flarum\Extend;
 use Flarum\Discussion\Discussion;
 use Flarum\Discussion\Event\Saving;
 use Flarum\Discussion\Event\Searching;
+use Webbinaro\AdkHomepage\Controller\AdkHomepageController;
 
 
 return [
     (new Extend\Frontend('forum'))
         ->js(__DIR__.'/js/dist/forum.js')
         ->css(__DIR__ . '/less/Forum.less')
-        ->route('/adkhome', 'adkhomepage')
+        ->route('/adkhome', 'adkhomepage',AdkHomepageController::class)
         // ->get('/blog/rss.xml', 'blog.rss.xml', RSS::class)
     ,
     (new Extend\Frontend('admin'))
