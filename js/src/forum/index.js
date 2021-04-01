@@ -14,6 +14,3 @@ app.initializers.add("adkhomepage", (app) => {
   });
 
 });
-
-
-  
