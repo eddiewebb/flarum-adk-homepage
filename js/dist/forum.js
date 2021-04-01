@@ -687,7 +687,7 @@ var AdkHomepage = /*#__PURE__*/function (_Page) {
     }), !this.isLoading && this.posts.length >= 1 && this.posts.map(function (article) {
       var blogImage = article.lastPostedUser().avatarUrl() ? "url(" + article.lastPostedUser().avatarUrl() + ")" : defaultImage;
       var isSized = article.blogMeta() && article.blogMeta().isSized();
-      var summary = article.lastPost() && article.lastPost().contentPlain() ? article.blogMeta().summary() : Object(flarum_utils_string__WEBPACK_IMPORTED_MODULE_9__["truncate"])(article.lastPost().contentPlain(), 140);
+      var summary = article.lastPost() && article.lastPost().contentPlain() ? Object(flarum_utils_string__WEBPACK_IMPORTED_MODULE_9__["truncate"])(article.lastPost().contentPlain(), 140) : "";
       return m(flarum_components_Link__WEBPACK_IMPORTED_MODULE_5___default.a, {
         href: "/d/" + article.slug() + "/" + article.lastPostNumber(),
         className: "BlogList-item BlogList-item-" + (isSized ? "sized" : "default")

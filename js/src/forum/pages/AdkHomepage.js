@@ -338,8 +338,8 @@ export default class AdkHomepage extends Page {
                     article.blogMeta() && article.blogMeta().isSized();
                   const summary =
                     article.lastPost() && article.lastPost().contentPlain()
-                      ? article.blogMeta().summary()
-                      : truncate(article.lastPost().contentPlain(),140);
+                      ? truncate(article.lastPost().contentPlain(),140)
+                      : "";
                     
                   return (
                     <Link
