@@ -332,7 +332,7 @@ export default class AdkHomepage extends Page {
                 this.posts.length >= 1 &&
                 this.posts.map((article) => {
                   const blogImage = 
-                    article.lastPostedUser().avatarUrl() 
+                    article.lastPostedUser() && article.lastPostedUser().avatarUrl()
                       ? `url(${article.lastPostedUser().avatarUrl()})`
                       : defaultImage;
                   const isSized =
