@@ -76,6 +76,7 @@ export default class AdkHomepage extends Page {
         app.store
           .find("discussions", {
             sort: "-lastPostedAt",
+            include: "lastPost",
           })
           .then(this.show.bind(this))
           .catch(() => {
