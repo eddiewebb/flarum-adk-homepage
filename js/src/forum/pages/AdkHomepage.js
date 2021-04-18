@@ -1,6 +1,8 @@
 import Page from "flarum/components/Page";
 import Button from "flarum/components/Button";
 import humanTime from "flarum/helpers/humanTime";
+import DiscussionComposer from 'flarum/components/DiscussionComposer';
+import LogInModal from 'flarum/components/LogInModal';
 import BlogCategories from "../components/BlogCategories";
 import Link from "flarum/components/Link";
 import tooltip from "../utils/tooltip";
@@ -161,6 +163,52 @@ export default class AdkHomepage extends Page {
         </small>
       </h2>
     );
+  }
+
+  startDiscussion(){
+    const canStartDiscussion = app.forum.attribute('canStartDiscussion') || !app.session.user;
+    return Button.component(
+        {
+          icon: 'fas fa-edit',
+          className: 'Button Button--primary IndexPage-newDiscussion',
+          itemClassName: 'App-primaryControl',
+          onclick: () => {
+            return new Promise((resolve, reject) => {
+      if (app.session.user) {
+        app.composer.load(DiscussionComposer, { user: app.session.user });
+        app.composer.show();
+
+        return resolve(app.composer);
+      } else {
+        app.modal.show(LogInModal);
+
+        return reject();
+      }
+    });
+          },
+          disabled: !canStartDiscussion,
+        },
+        app.translator.trans(canStartDiscussion ? 'core.forum.index.start_discussion_button' : 'core.forum.index.cannot_start_discussion_button')
+      )
+  }
+    /**
+   * Open the composer for a new discussion or prompt the user to login.
+   *
+   * @return {Promise}
+   */
+  newDiscussionAction() {
+    return new Promise((resolve, reject) => {
+      if (app.session.user) {
+        app.composer.load(DiscussionComposer, { user: app.session.user });
+        app.composer.show();
+
+        return resolve(app.composer);
+      } else {
+        app.modal.show(LogInModal);
+
+        return reject();
+      }
+    });
   }
 
   view() {
@@ -439,6 +487,7 @@ export default class AdkHomepage extends Page {
             </div>
 
             <div className={"Sidebar"}>
+              { this.startDiscussion() }
               <BlogCategories />
               <ForumNav />
             </div>
