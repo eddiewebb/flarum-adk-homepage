@@ -40,6 +40,13 @@ class AdkHomepageController
         $blogQ .= "is:blog" . (Arr::get($queryParams, 'category') ? " tag:" . Arr::get($queryParams, 'category') : "");
 
         // Preload blog posts
+        $featuredDiscussions = $this->getApiDocument($request->getAttribute('actor'), [
+            "filter" => [
+                "q" => "tag:featured"
+            ],
+            "sort" => "-createdAt",
+            "limit" => "3",
+        ]);
         $blogDiscussions = $this->getApiDocument($request->getAttribute('actor'), [
             "filter" => [
                 "q" => $blogQ
@@ -55,11 +62,12 @@ class AdkHomepageController
         ]);
         //var_dump($recentDiscussions);
         // Set payload
-        $bothDatas = array_replace_recursive($blogDiscussions->data,$recentDiscussions->data);
-        $bothIncluded = array_replace_recursive($blogDiscussions->included,$recentDiscussions->included);
+        $allLinks = array_replace_recursive($featuredDiscussions->links, $blogDiscussions->links, $recentDiscussions->links, );
+        $bothDatas = array_replace_recursive($featuredDiscussions->data, $blogDiscussions->data, $recentDiscussions->data, );
+        $bothIncluded = array_replace_recursive($featuredDiscussions->included, $blogDiscussions->included, $recentDiscussions->included);
 
         $merged = (object)[
-            "links"=>$recentDiscussions->links,
+            "links"=>$allLinks,
             "data"=>$bothDatas,
             "included"=>$bothIncluded
         ];

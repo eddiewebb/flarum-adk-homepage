@@ -10,8 +10,8 @@ import LanguageDropdown from "../components/LanguageDropdown/LanguageDropdown";
 import ForumNav from "../components/ForumNav";
 import { truncate } from 'flarum/utils/string';
 
-
 export default class AdkHomepage extends Page {
+
   oninit(vnode) {
     super.oninit(vnode);
 
@@ -20,9 +20,9 @@ export default class AdkHomepage extends Page {
     this.bodyClass = "BlogOverviewPage";
 
     this.isLoading = true;
-    this.featuredPosts = [];
-    this.posts = [];
-    this.discussions = [];
+    this.featured = []; //blog content
+    this.posts = []; // recent oposts
+    this.featuretag = []; // things tagged with secondary tag
     this.hasMore = null;
     this.isLoadingMore = false;
 
@@ -65,28 +65,38 @@ export default class AdkHomepage extends Page {
     }
 
     app.store
-      .find("discussions", {
-        filter: {
-          q,
-        },
+      .find("discussions", { filter: { tag:'featured'},
         sort: "-createdAt",
         limit: 3,
       })
-      .then((blogs) => {
-        //save the blogs off, then grab discussions
-        this.featuredPosts = blogs.slice(0, 3);
-        app.store
-          .find("discussions", {
-            sort: "-lastPostedAt",
-            include: "lastPost",
-          })
-          .then(this.show.bind(this))
-          .catch(() => {
-            m.redraw();
-          });
-      })
-      .catch(() => {
-        m.redraw();
+      .then((featuretag) => {
+          this.featuretag = featuretag.slice(0, 3);
+          app.store
+            .find("discussions", {
+              filter: {
+                q,
+              },
+              sort: "-createdAt",
+              limit: 3,
+            })
+            .then((featured) => {
+              //save the featured off, then grab discussions
+              jQuery.merge(this.featuretag, featured.slice(0,3))
+              this.featured = this.featuretag
+              app.store
+                .find("discussions", {
+                  sort: "-lastPostedAt",
+                  include: "lastPost",
+                })
+                .then(this.show.bind(this))
+                .catch(() => {
+                  m.redraw();
+                });
+            })
+            .catch(() => {
+              m.redraw();
+            });
+
       });
   }
 
@@ -98,14 +108,13 @@ export default class AdkHomepage extends Page {
       m.redraw();
       return;
     }
+    this.posts = articles;
 
     // Set pagination
     this.hasMore =
       articles.payload.links && articles.payload.links.next
         ? articles.payload.links.next
         : null;
-
-    this.posts = articles;
 
     this.isLoading = false;
 
@@ -138,9 +147,7 @@ export default class AdkHomepage extends Page {
     if (!m.route.param("slug")) {
       return (
         <h2>
-          {app.translator.trans(
-            "v17development-flarum-blog.forum.recent_posts"
-          )}
+          {app.translator.trans("adkhomepage.forum.featured")}
         </h2>
       );
     }
@@ -174,17 +181,17 @@ export default class AdkHomepage extends Page {
           itemClassName: 'App-primaryControl',
           onclick: () => {
             return new Promise((resolve, reject) => {
-      if (app.session.user) {
-        app.composer.load(DiscussionComposer, { user: app.session.user });
-        app.composer.show();
+              if (app.session.user) {
+                app.composer.load(DiscussionComposer, { user: app.session.user });
+                app.composer.show();
 
-        return resolve(app.composer);
-      } else {
-        app.modal.show(LogInModal);
+                return resolve(app.composer);
+              } else {
+                app.modal.show(LogInModal);
 
-        return reject();
-      }
-    });
+                return reject();
+              }
+            });
           },
           disabled: !canStartDiscussion,
         },
@@ -267,8 +274,8 @@ export default class AdkHomepage extends Page {
                 ))}
 
               {!this.isLoading &&
-                this.featuredPosts.length >= 0 &&
-                this.featuredPosts.map((article) => {
+                this.featured.length >= 0 &&
+                this.featured.map((article) => {
                   const blogImage =
                     article.blogMeta() && article.blogMeta().featuredImage()
                       ? `url(${article.blogMeta().featuredImage()})`
@@ -451,7 +458,7 @@ export default class AdkHomepage extends Page {
                 })}
 
               {!this.isLoading &&
-                this.featuredPosts.length > 0 &&
+                this.posts.length > 0 &&
                 this.hasMore === null && (
                   <p className={"FlarumBlog-reached-end"}>
                     {app.translator.trans(
@@ -461,7 +468,7 @@ export default class AdkHomepage extends Page {
                 )}
 
               {!this.isLoading &&
-                this.featuredPosts.length === 0 &&
+                this.featured.length === 0 &&
                 this.posts.length === 0 && (
                   <p className={"FlarumBlog-reached-end"}>
                     {app.translator.trans(
