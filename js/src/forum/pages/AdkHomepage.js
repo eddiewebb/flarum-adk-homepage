@@ -218,6 +218,19 @@ export default class AdkHomepage extends Page {
     });
   }
 
+  isFeatured(article){
+      if (!article.tags()){
+        return false;
+      } 
+      let found = false
+      article.tags().map((tag)=>{
+        if (tag.slug() == "featured") {
+          found = true;
+        }
+      })
+      return found
+  }
+
   view() {
     const defaultImage = app.forum.attribute("blogDefaultImage")
       ? `url(${
@@ -283,12 +296,17 @@ export default class AdkHomepage extends Page {
                   const blogTag = article.tags()
                     ? article.tags().filter((tag) => tag.isChild())
                     : [];
+                  const contentLink = this.isFeatured(article)
+                    ? app.route("discussion", {
+                        id: `${article.slug()}`,
+                      })
+                    : app.route("blogArticle", {
+                        id: `${article.slug()}`,
+                      })
 
                   return (
                     <Link
-                      href={app.route("blogArticle", {
-                        id: `${article.slug()}`,
-                      })}
+                      href={contentLink}
                       className={
                         "BlogFeatured-list-item FlarumBlog-default-image"
                       }
