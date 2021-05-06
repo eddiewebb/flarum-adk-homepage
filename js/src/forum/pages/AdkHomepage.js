@@ -81,7 +81,7 @@ export default class AdkHomepage extends Page {
             })
             .then((featured) => {
               //save the featured off, then grab discussions
-              jQuery.merge(this.featuretag, featured.slice(0,3))
+              jQuery.merge(this.featuretag, featured.slice(0,3-this.featuretag.length))
               this.featured = this.featuretag
               app.store
                 .find("discussions", {
